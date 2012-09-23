@@ -26,7 +26,9 @@ Ext.define("AirJukeBox.view.Jukebox", {
 
         var songList = {
             xtype: "songlist",
-            store: Ext.getStore("Playlist")
+            store: Ext.getStore("Playlist"),
+            disableSelection:true,
+            id:"songlist"
         };
 
         this.add([topToolbar, songList]);

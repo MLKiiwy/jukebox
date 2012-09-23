@@ -64,9 +64,8 @@ Ext.define("AirJukeBox.view.Start", {
                                 spacer,
                                 labelStatus,
                                 spacer,
-                                buttonBlindtest,
-                                spacer,
-                                buttonJukebox]
+                                buttonBlindtest
+                                ]
                     }
                     
                 ]

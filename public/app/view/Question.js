@@ -28,7 +28,7 @@ Ext.define("AirJukeBox.view.Question", {
 
         var button = {
             xtype: "button",
-            text: "Propose",
+            text: "Answer",
             handler: this.onButtonPress,
             name: 'responseButton',
             id: 'responseButton'
@@ -48,7 +48,7 @@ Ext.define("AirJukeBox.view.Question", {
                         items: [
                         {
                             xtype: "label",
-                            html : 'Votre réponse ?'
+                            html : 'Title or Artist ?'
                         },
                         input,button,tryAgain
                         ]

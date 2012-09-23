@@ -14,18 +14,32 @@ Ext.define("AirJukeBox.view.Response", {
 
         var good = {
             xtype: "label",
-            html : 'Yeah, you rocks !',
+            html : 'Yeah, you rock !',
             id: 'goodLabel',
             hidden:true
         };
 
         var bad = {
             xtype: "label",
-            html : 'Pas assez rapide ...',
+            html : 'Not fast enough ...',
             id: 'badLabel',
             hidden:true
         };
 
-        this.add([topToolbar, good, bad]);
+        var goodAnswer = {
+            xtype: "label",
+            html : '',
+            id: 'goodAnswer',
+            hidden:false
+        };
+
+        this.add([topToolbar, 
+            {
+                xtype:'container', 
+                layout:'vbox',
+                items:[
+                    good, bad, goodAnswer
+                ]
+            }]);
     }
 });

@@ -16,7 +16,9 @@ Ext.define("AirJukeBox.controller.Main", {
             tryAgain: "question #tryAgain",
             responseButton: "question #responseButton",
             searchList: "search",
-            jukeboxView : "jukebox"
+            jukeboxView : "jukebox",
+            playlistList: "jukebox #songlist",
+            goodAnswerLabel : "response #goodAnswer"
         },
         control: {
             goButton: {
@@ -100,7 +102,7 @@ Ext.define("AirJukeBox.controller.Main", {
             this.connected = true;
 
             controller.getGoButton().show();
-            controller.getJukeboxButton().show();
+           // controller.getJukeboxButton().show();
             controller.getLabelStatus().hide();
         });
 
@@ -111,7 +113,7 @@ Ext.define("AirJukeBox.controller.Main", {
             console.log('Disconnect');
         });
 
-        socket.on('good-response', function (playerKey, name) {
+        socket.on('good-response', function (playerKey, name, song, artist) {
             // Switch screen
             //Ext.Viewport.animateActiveItem(controller.getResponseView(), controller.slideLeftTransition);
             Ext.Viewport.setActiveItem(2);
@@ -121,10 +123,12 @@ Ext.define("AirJukeBox.controller.Main", {
                 controller.getGoodResponse().show();
                 controller.getBadResponse().hide();
             } else {
-                controller.getBadResponse().setHtml('Pas assez rapide, ' + name + ' a gagné');
+                controller.getBadResponse().setHtml('Not fast enough, "' + name + '" win');
                 controller.getBadResponse().show();
                 controller.getGoodResponse().hide();
             }
+
+            controller.getGoodAnswerLabel().setHtml('The valid answers were : ' + song + ", " + artist);
         });
 
         socket.on('bad-response', function (playerName) {
@@ -142,15 +146,7 @@ Ext.define("AirJukeBox.controller.Main", {
         });
 
         socket.on('refresh-song-given', function (name, uri) {
-            var now = new Date();
-            var id = (now.getTime()).toString() + (controller.getRandomInt(0, 100)).toString();
-            var newSong = Ext.create("AirJukeBox.model.Song", {
-                id:id,
-                title:name,
-                uri:uri
-            });
-
-            this.currentSong = newSong;
+            controller.setCurrentSong(name, uri);
         });
 
         socket.on('refresh-playlist-given', function (playlist) {
@@ -169,26 +165,20 @@ Ext.define("AirJukeBox.controller.Main", {
             p.sync();
         });
 
-        socket.on('new-song', function (name, uri) {
+        socket.on('new-song', function (name, uri, position) {
             console.log('new-song : ' + name);
 
             if(controller.mode === '') {
                 return;
             }
 
-            var now = new Date();
-            var id = (now.getTime()).toString() + (controller.getRandomInt(0, 100)).toString();
-            var newSong = Ext.create("AirJukeBox.model.Song", {
-                id:id,
-                title:name,
-                uri:uri
-            });
-
-            this.currentSong = newSong;
+            controller.setCurrentSong(name, uri);
 
             if(controller.mode == 'jukebox') {
                 // Add song to the list
-                
+                // playlistList.setActiveItem(position);
+
+
             } else if(controller.mode == 'blindtest') {
                 if(controller.currentScreen == 'question') {
                     // Stay on
@@ -212,5 +202,16 @@ Ext.define("AirJukeBox.controller.Main", {
     init: function () {
         this.callParent(arguments);
         console.log("init");
+    },
+    setCurrentSong: function(name, uri) {
+        var now = new Date();
+        var id = (now.getTime()).toString() + (this.getRandomInt(0, 100)).toString();
+        var newSong = Ext.create("AirJukeBox.model.Song", {
+            id:id,
+            title:name,
+            uri:uri
+        });
+
+        this.currentSong = newSong;
     }
 });

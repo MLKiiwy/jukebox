@@ -43,13 +43,13 @@ io.sockets.on('connection', function (socket) {
 		//socket.broadcast.emit('update-song', uri, name);
 	});
 
-	socket.on('good-response-given', function (playerName) {
+	socket.on('good-response-given', function (playerName, song , artist) {
 		if(typeof(players[playerName]) != 'undefined') {
 			// Add player
 			players[playerName].points++;
 			io.sockets.emit('update-users', players);
 		}
-		io.sockets.emit('good-response', playerName ,players[playerName].name);
+		io.sockets.emit('good-response', playerName ,players[playerName].name, song, artist);
 		//socket.broadcast.emit('update-song', uri, name);
 	});
 
@@ -58,8 +58,8 @@ io.sockets.on('connection', function (socket) {
 		//socket.broadcast.emit('update-song', uri, name);
 	});
 
-	socket.on('change-song', function (name, uri) {
-		io.sockets.emit('new-song', name, uri);
+	socket.on('change-song', function (name, uri, position) {
+		io.sockets.emit('new-song', name, uri, position);
 		//socket.broadcast.emit('update-song', uri, name);
 	});
 
