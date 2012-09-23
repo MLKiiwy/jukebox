@@ -1,8 +1,9 @@
 var app = require('express').createServer();
 var io = require('socket.io').listen(app);
 var express = require('express');
+var port = process.env.port || 8080;
 
-app.listen(8080);
+app.listen(port);
 
 app.configure(function() {
     app.set("view options", { layout: false, pretty: true });
