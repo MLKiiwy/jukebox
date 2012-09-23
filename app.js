@@ -16,7 +16,7 @@ app.get('/', function (req, res) {
 	res.sendfile(__dirname + '/index.html');
 });
 
-app.get('/app.json', function (req, res) {
+app.get('/app.clientjson', function (req, res) {
 	res.sendfile(__dirname + '/public/app.json');
 });
 
@@ -65,6 +65,16 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('add-song', function (playerName, uri, name) {
 		io.sockets.emit('add-song-playlist', playerName, uri, name);
+		//socket.broadcast.emit('update-song', uri, name);
+	});
+
+	socket.on('refresh-song', function (name, uri) {
+		io.sockets.emit('refresh-song-given', name, uri);
+		//socket.broadcast.emit('update-song', uri, name);
+	});
+
+	socket.on('refresh-playlist', function (playlist) {
+		io.sockets.emit('refresh-playlist-given', playlist);
 		//socket.broadcast.emit('update-song', uri, name);
 	});
 

@@ -42,7 +42,8 @@ Ext.define("AirJukeBox.controller.Main", {
         },
         playerName: '',
         lastResponseGood:false,
-        mode:''
+        mode:'',
+        currentSong:null
     },
     onGoSearchView:function() {
         Ext.Viewport.setActiveItem(5);
@@ -140,8 +141,40 @@ Ext.define("AirJukeBox.controller.Main", {
             }
         });
 
+        socket.on('refresh-song-given', function (name, uri) {
+            var now = new Date();
+            var id = (now.getTime()).toString() + (controller.getRandomInt(0, 100)).toString();
+            var newSong = Ext.create("AirJukeBox.model.Song", {
+                id:id,
+                title:name,
+                uri:uri
+            });
+
+            this.currentSong = newSong;
+        });
+
+        socket.on('refresh-playlist-given', function (playlist) {
+            var p = Ext.getStore("Playlist");
+            p.removeAll();
+            var now = new Date();
+            for(var i=0; i<playlist.length; i++) {
+                var id = (now.getTime()).toString() + (controller.getRandomInt(0, 100)).toString();
+                var newSong = Ext.create("AirJukeBox.model.Song", {
+                    id:id,
+                    title:playlist[i].name,
+                    uri:playlist[i].uri
+                });
+                p.add(newSong);
+            }
+            p.sync();
+        });
+
         socket.on('new-song', function (name, uri) {
             console.log('new-song : ' + name);
+
+            if(controller.mode === '') {
+                return;
+            }
 
             var now = new Date();
             var id = (now.getTime()).toString() + (controller.getRandomInt(0, 100)).toString();
@@ -151,13 +184,12 @@ Ext.define("AirJukeBox.controller.Main", {
                 uri:uri
             });
 
+            this.currentSong = newSong;
+
             if(controller.mode == 'jukebox') {
                 // Add song to the list
-                var playlist = Ext.getStore("Playlist");
-
-                playlist.add(newSong);
-                playlist.sync();
-            } else {
+                
+            } else if(controller.mode == 'blindtest') {
                 if(controller.currentScreen == 'question') {
                     // Stay on
                     controller.getTryAgain().hide();
