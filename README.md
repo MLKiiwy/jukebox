@@ -8,3 +8,5 @@ Architecture :
 - client app spotify : html / js
 - client smartphone : JS (Sencha Mobile avec lib socket.io)
 - serveur : node.js pour la création de room / relais des messages (express + socket.io)
+
+Projet abandonné.
